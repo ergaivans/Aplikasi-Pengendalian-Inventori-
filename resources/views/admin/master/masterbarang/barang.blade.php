@@ -49,9 +49,10 @@
                                                 <th>No</th>
                                                 <th>Nama Barang</th>
                                                 <th>Kategori Barang</th>
-
                                                 <th>Harga Barang</th>
                                                 <th>Stock Barang</th>
+                                                <th>Safety Stock</th>
+                                                <th>Informasi</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -74,16 +75,34 @@
                                                     @else
                                                         <td>{{ $item->STOCK_BARANG }} Unit</td>
                                                     @endif
+                                                    @if($item->NILAI_SS)
+                                                        <td>{{ $item->NILAI_SS }} Unit</td>
+                                                    @else
+                                                        <td>T/A</td>
+                                                    @endif
+                                                    <td style="text-align: center;">
+                                                    @if ($item->STOCK_BARANG < $item->NILAI_SS && $item->STOCK_BARANG < $item->NILAI_ROP )
+                                                        <span class="badge badge-danger w-75">Stock Habis</span>
+
+                                                    @elseif ($item->STOCK_BARANG < $item->NILAI_ROP )
+                                                    <span class="badge badge-warning w-75">Nilai Dibawah ROP</span>
+                                                    @elseif($item->NILAI_SS == null || $item->NILAI_ROP == null)
+                                                    <span class="badge badge-secondary w-75">Variabel Kosong</span>
+                                                    @else
+                                                    <span class="badge badge-success w-75">Stock Aman</span>
+                                                    @endif
+                                                </td>
+
 
 
 
                                                     <td>
-                                                        <a href="#ModalEditBarang{{ $item->ID_BARANG }}"
-                                                            data-toggle="modal" class="btn btn-primary btn-xs"> <i
-                                                                class="fa fa-edit"> Edit</i></a>
-                                                        <a href="#ModalHapusBarang{{ $item->ID_BARANG }}"
+                                                        <a href="#ModalEditBarang{{ $item->ID_BARANG }}" data-toggle="modal"
+                                                            class="btn btn-primary btn-xs"> <i class="fa fa-edit">
+                                                                Edit</i></a>
+                                                        {{-- <a href="#ModalHapusBarang{{ $item->ID_BARANG }}"
                                                             data-toggle="modal" class="btn btn-danger btn-xs"> <i
-                                                                class="fa fa-trash"> Hapus</i></a>
+                                                                class="fa fa-trash"> Hapus</i></a> --}}
                                                     </td>
                                                 </tr>
                                                 @php
@@ -156,11 +175,11 @@
                         <br>
                         <button id="bt1" type="button" class="btn btn-default"><span class="btn-label"><i
                                     class="fa fa-archive"></i></span>
-                            Default
+                            Tanpa Stok
                         </button>
                         <button id="bt2" type="button" class="btn btn-secondary"> <span class="btn-label"> <i
                                     class="fa fa-plus"></i> </span>
-                            Secondary
+                            Dengan Stok
                         </button>
 
                         <input id="inputstock" type="number" class="form-control" name="stock"
@@ -181,7 +200,7 @@
                     <div class="form-group">
                         <label>Supplier Barang</label>
                         <select class="form-control" name="supplier" required>
-                            <option value="" hidden>---- Pilih Kategori ----</option>
+                            <option value="" hidden>---- Pilih Supplier ----</option>
 
                             @foreach ($DaftarSupplier as $ds)
                                 <option value="{{ $ds->ID_SUPPLIER }}">{{ $ds->NAMA_SUPPLIER }}</option>
@@ -326,5 +345,4 @@
             </div>
         </div>
     @endforeach
-
 @endsection

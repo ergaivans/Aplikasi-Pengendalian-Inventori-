@@ -16,18 +16,21 @@ class HomeController extends Controller
     public function dashboard()
     {
         $barangMasuk = DB::table('masuk as ms')
+            ->select('ba.NAMA_BARANG', DB::raw('CAST(SUM(ms.JML_BARANG_MSK) as INT) as JML_BARANG_MSK'))
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
-            ->orderBy('ms.jml_barang_msk', 'desc')
+            ->where(DB::raw('DATE_FORMAT(ms.TANGGAL_MASUK, "%Y-%m")'), date("Y-m"))
+            ->groupBy('ba.NAMA_BARANG')
+            ->orderBy(DB::raw('SUM(ms.JML_BARANG_MSK)'), 'desc')
             ->get();
-        // dd($barangMasuk);
+        //dd($barangMasuk);
         $a = [];
         foreach ($barangMasuk as $data) {
 
             array_push($a, $data->JML_BARANG_MSK);
         }
-
+        // dd($a);
         $c = [];
         foreach ($barangMasuk as $data) {
             $x['NAMA_BARANG'] = $data->NAMA_BARANG;
@@ -36,10 +39,14 @@ class HomeController extends Controller
         }
 
 
-        $barangKeluar = DB::table('keluar as kl')
+        $barangKeluar = DB::table('detail_keluar as kl')
+            ->select('ba.NAMA_BARANG', DB::raw('CAST(SUM(kl.JML_UNIT) as INT) as JML_KELUAR'))
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'kl.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'kl.ID_KAR')
-            ->orderBy('kl.jml_keluar', 'desc')
+            ->where(DB::raw('DATE_FORMAT(kl.TANGGAL_KELUAR, "%Y-%m")'), date("Y-m"))
+            ->where('STATUS_PENDING', 0)
+            ->groupBy('ba.NAMA_BARANG')
+            ->orderBy(DB::raw('SUM(kl.JML_UNIT)'), 'desc')
             ->get();
 
         $b = [];
@@ -111,6 +118,7 @@ class HomeController extends Controller
     {
         $data = DB::table('operasi as op')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'op.ID_BARANG')
+            ->where('op.STATUS_OP', '=', 1)
             ->get();
         $data1 = DB::table('barang')
             ->get();
@@ -121,10 +129,34 @@ class HomeController extends Controller
 
     public function TampilMasterBarang(Request $request)
     {
-        $data = DB::table('barang as ba')
+        $exclude = DB::table('barang as ba')
+        ->select('ba.ID_BARANG', 'sp.ID_SUPPLIER', 'ka.ID_KATEGORI', 'NAMA_BARANG', 'HARGA_BARANG', 'STOCK_BARANG', 'NAMA_KATEGORI', 'NAMA_SUPPLIER', 'ALAMAT_SUPPLIER', 'TLP_SUPPLIER', 'KOTA_SUPPLIER', 'ID_SS', 'TANGGAL_SS', 'NILAI_SS', 'STATUS_SS', 'ID_ROP', 'TANGGAL_ROP', 'NILAI_ROP', 'STATUS_ROP')
             ->join('kategori as ka', 'ka.ID_KATEGORI', '=', 'ba.ID_KATEGORI')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ba.ID_SUPPLIER')
+            ->leftJoin('safety_stock as ss', 'ss.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->leftJoin('rop as rp', 'rp.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->where('ss.STATUS_SS', 1)
+            ->where('rp.STATUS_ROP', 1);
+
+        $not_in = [];
+
+        foreach ($exclude->get() as $temp) {
+            array_push($not_in, $temp->ID_BARANG);
+        }
+
+
+        $data = DB::table('barang as ba')
+        ->select('ba.ID_BARANG', 'sp.ID_SUPPLIER', 'ka.ID_KATEGORI', 'NAMA_BARANG', 'HARGA_BARANG', 'STOCK_BARANG', 'NAMA_KATEGORI', 'NAMA_SUPPLIER', 'ALAMAT_SUPPLIER', 'TLP_SUPPLIER', 'KOTA_SUPPLIER', 'ID_SS', 'TANGGAL_SS', 'NILAI_SS', 'STATUS_SS', 'ID_ROP', 'TANGGAL_ROP', 'NILAI_ROP', 'STATUS_ROP')
+            ->join('kategori as ka', 'ka.ID_KATEGORI', '=', 'ba.ID_KATEGORI')
+            ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ba.ID_SUPPLIER')
+            ->leftJoin('safety_stock as ss', 'ss.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->leftJoin('rop as rp', 'rp.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->whereNotIn('ba.ID_BARANG', $not_in)
+            ->union($exclude)
+            ->orderBy('ID_BARANG')
             ->get();
+
+            // dd($data);
 
         $data1 = DB::table('kategori')
             ->get();
@@ -145,29 +177,57 @@ class HomeController extends Controller
             ->join('eoq as eq', 'eq.ID_BARANG', '=', 'ss.ID_BARANG')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ss.ID_SUPPLIER')
             ->where('rp.STATUS_ROP', 1)
+            ->where('eq.STATUS_EOQ', 1)
             ->groupBy('rp.ID_ROP', 'ss.ID_BARANG', 'ss.NAMA_BARANG', 'ss.HARGA_BARANG', 'ss.STOCK_BARANG', 'rp.NILAI_ROP', 'eq.NILAI_EOQ', 'sp.NAMA_SUPPLIER')
             ->get();
         // dd($data);
 
-        $pdf = PDF::loadView('gudang/operasibarang/databarangrop/pdf', [
-            'DataBarangRop' => $data
-        ])->setPaper('a4', 'landscape');
+        // $pdf = PDF::loadView('gudang/operasibarang/databarangrop/pdf', [
+        //     'DataBarangRop' => $data
+        // ])->setPaper('a4', 'landscape');
 
-        // dd($data)
+        //dd($data);
 
-        foreach ($data as $q) {
-            // if ($q->STOCK_BARANG < $q->NILAI_ROP) {
-            $insertToDB = array(
-                'ID_BARANG' => $q->ID_BARANG,
-                // 'TANGGAL_PEMBELIAN' => $q->TANGGAL_ROP,
-                'TANGGAL_PEMBELIAN' => date('d-m-Y H:i:s'),
-            );
-
-            DB::table('pembelian')->insert($insertToDB);
-            // }
+        $jumlah_row = DB::table('pembelian')->select(DB::raw('COUNT(*) as JML'))->first();
+        if ($jumlah_row->JML == 0) {
+            $id_kategori = (object) array('MAX_ID_NUMBER' => 'KP_001');
+        } else {
+            $id_t = 0;
+            $id = DB::table('pembelian')
+                ->select(DB::raw('CONVERT(SUBSTRING(ID_PEMESANAN, 4), DECIMAL) AS ID_TIPE'))
+                ->orderBy(DB::raw('CONVERT(SUBSTRING(ID_PEMESANAN, 4), DECIMAL)'), 'desc')
+                ->first();
+            for ($i = 1; $i <= ($id->ID_TIPE + 1); $i++) {
+                $id_t++;
+                $idb = DB::table('pembelian')
+                    ->select(DB::raw('count(CONVERT(SUBSTRING(ID_PEMESANAN, 4), DECIMAL)) as jumlah'))
+                    ->where(DB::raw('CONVERT(SUBSTRING(ID_PEMESANAN, 4), DECIMAL)'), '=', $id_t)
+                    ->first();
+                if ($idb->jumlah == 0) {
+                    $i = $id->ID_TIPE + 1;
+                }
+            }
+            $id_kategori = DB::table('pembelian')->select(DB::raw('CONCAT("KP_", LPAD(' . $id_t . ', 3, "0")) AS MAX_ID_NUMBER'))->first();
         }
 
-        return $pdf->download('Laporan-transaksi-barang-rop.pdf');
+        //dd($data);
+
+        foreach ($data as $q) {
+                if($q->STOCK_BARANG < $q->NILAI_ROP){
+                    $insertToDB = array(
+                        'ID_BARANG' => $q->ID_BARANG,
+                        // 'TANGGAL_PEMBELIAN' => $q->TANGGAL_ROP,
+                        'ID_PEMESANAN' => $id_kategori->MAX_ID_NUMBER,
+                        'JML_PESAN' => $q->NILAI_EOQ,
+                        'STATUS' => 0,
+                        'TANGGAL_PEMBELIAN' => date('d-m-Y H:i:s'),
+                    );
+                    DB::table('pembelian')->insert($insertToDB);
+                }
+        }
+
+        // return $pdf->download('Laporan-transaksi-barang-rop.pdf');
+        return View('gudang/operasibarang/databarangrop/pdf', ['DataBarangRop' => $data]);
     }
 
     public function pdf()
@@ -194,11 +254,14 @@ class HomeController extends Controller
         $namaBarang = $request->get('namaBarang');
 
         $data = DB::table('masuk as ms')
+            ->select('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
+            ->join('pembelian as pb', 'ms.ID_PEMESANAN', '=', 'pb.ID_PEMESANAN')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
             ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
             ->whereBetween('ms.TANGGAL_MASUK', [$fromDate, $toDate])
+            ->groupBy('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
             ->get();
 
         // dd($data);
@@ -219,38 +282,59 @@ class HomeController extends Controller
         $namaBarang = $request->search;
 
         $data = DB::table('masuk as ms')
-            ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
-            ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
-            ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
-            ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
-            ->whereBetween('ms.TANGGAL_MASUK', [$fromDate, $toDate])
-            ->get();
+        ->select('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
+        ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
+        ->join('pembelian as pb', 'ms.ID_PEMESANAN', '=', 'pb.ID_PEMESANAN')
+        ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
+        ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
+        ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
+        ->whereBetween('ms.TANGGAL_MASUK', [$fromDate, $toDate])
+        ->groupBy('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
+        ->orderBy( 'ms.TANGGAL_MASUK', 'ASC')
+        ->get();
 
-        $pdf = PDF::loadView('gudang/transaksimasuk/pdf', [
-            'from' => $fromDate,
-            'to' => $toDate,
-            'DaftarBarangMasuk' => $data
-        ])->setPaper('a4', 'landscape');
+        // $data = DB::table('masuk as ms')
+        //     ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
+        //     ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
+        //     ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
+        //     ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
+        //     ->whereBetween('ms.TANGGAL_MASUK', [$fromDate, $toDate])
+        //     ->get();
 
-        return $pdf->download('Laporan-transaksi-barang-masuk.pdf');
-        // return view('gudang/transaksimasuk/pdf', [
+        // $pdf = PDF::loadView('gudang/transaksimasuk/pdf', [
+        //     'from' => $fromDate,
+        //     'to' => $toDate,
         //     'DaftarBarangMasuk' => $data
-        // ]);
+        // ])->setPaper('landscape');
+
+        // return $pdf->download('Laporan-transaksi-barang-masuk.pdf');
+
+        return View('gudang/transaksimasuk/pdf')
+        ->with('from', $fromDate)
+        ->with('to', $toDate)
+        ->with('DaftarBarangMasuk', $data);
+        // return view('gudang/transaksimasuk/pdf', [
+        //    'from' => $fromDate,
+        //     'to' => $toDate,
+        //     'DaftarBarangMasuk' => $data
+        //  ]);
     }
 
     // TampilDetailPembelian
     public function TampilDetailPembelian($id)
     {
-        $data = DB::table('pembelian as pb')
-            ->select('pb.ID_PEMBELIAN', 'pb.TANGGAL_PEMBELIAN', 'br.NAMA_BARANG', 'br.STOCK_BARANG', 'sp.NAMA_SUPPLIER', 'rp.NILAI_ROP', 'eq.NILAI_EOQ')
-            ->join('barang as br', 'br.ID_BARANG', '=', 'pb.ID_BARANG')
-            ->join('rop as rp', 'rp.ID_BARANG', '=', 'pb.ID_BARANG')
-            ->join('eoq as eq', 'eq.ID_BARANG', '=', 'pb.ID_BARANG')
-            ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'br.ID_SUPPLIER')
-            ->where('pb.TANGGAL_PEMBELIAN', $id)
-            ->groupBy('pb.ID_PEMBELIAN', 'pb.TANGGAL_PEMBELIAN', 'br.NAMA_BARANG', 'br.STOCK_BARANG', 'sp.NAMA_SUPPLIER', 'rp.NILAI_ROP', 'eq.NILAI_EOQ')
-            ->get();
-        // dd($data);
+        // $data = DB::table('pembelian as pb')
+        //     ->select('pb.ID_PEMBELIAN', 'pb.TANGGAL_PEMBELIAN', 'br.NAMA_BARANG', 'br.STOCK_BARANG', 'sp.NAMA_SUPPLIER', 'eq.NILAI_EOQ')
+        //     ->join('barang as br', 'br.ID_BARANG', '=', 'pb.ID_BARANG')
+        //     ->join('eoq as eq', 'eq.ID_BARANG', '=', 'pb.ID_BARANG')
+        //     ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'br.ID_SUPPLIER')
+        //     ->where('pb.TANGGAL_PEMBELIAN', $id)
+        //     ->where('eq.STATUS_EOQ', '=', 1)
+        //     ->groupBy('pb.ID_PEMBELIAN', 'pb.TANGGAL_PEMBELIAN', 'br.NAMA_BARANG', 'br.STOCK_BARANG', 'sp.NAMA_SUPPLIER', 'eq.NILAI_EOQ')
+        //     ->get();
+
+        $data = DB::select("SELECT pb.ID_PEMBELIAN, br.NAMA_BARANG, sp.NAMA_SUPPLIER, br.STOCK_BARANG, pb.TANGGAL_PEMBELIAN, pb.JML_PESAN as NILAI_EOQ, pb.ID_PEMESANAN, CASE WHEN SUM(ms.JML_BARANG_MSK) IS NULL THEN 0 ELSE SUM(ms.JML_BARANG_MSK) END AS JML_DITERIMA FROM `pembelian` pb LEFT JOIN masuk ms ON ms.ID_PEMESANAN = pb.ID_PEMESANAN AND ms.ID_BARANG = pb.ID_BARANG JOIN barang br ON br.ID_BARANG = pb.ID_BARANG JOIN supplier sp ON sp.ID_SUPPLIER = br.ID_SUPPLIER JOIN eoq ON eoq.ID_BARANG = pb.ID_BARANG WHERE eoq.STATUS_EOQ = 1 AND pb.TANGGAL_PEMBELIAN = '$id' GROUP BY pb.ID_PEMBELIAN, br.NAMA_BARANG, sp.NAMA_SUPPLIER, br.STOCK_BARANG, pb.TANGGAL_PEMBELIAN, pb.JML_PESAN, pb.ID_BARANG, pb.ID_PEMESANAN");
+        //dd($data);
         return View('gudang/pembelian/detailpembelian')
             ->with('data', $data);
     }
@@ -264,6 +348,8 @@ class HomeController extends Controller
             ->join('eoq as eq', 'eq.ID_BARANG', '=', 'pb.ID_BARANG')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'br.ID_SUPPLIER')
             ->where('pb.TANGGAL_PEMBELIAN', $id)
+            ->where('rp.STATUS_ROP', '=', 1)
+            ->where('eq.STATUS_EOQ', '=', 1)
             ->groupBy('pb.ID_PEMBELIAN', 'pb.TANGGAL_PEMBELIAN', 'br.NAMA_BARANG', 'br.STOCK_BARANG', 'sp.NAMA_SUPPLIER', 'rp.NILAI_ROP', 'eq.NILAI_EOQ', 'br.HARGA_BARANG')
             ->get();
 
@@ -277,8 +363,10 @@ class HomeController extends Controller
     public function TampilPembelian()
     {
         $data = DB::table('pembelian')
-            ->select('TANGGAL_PEMBELIAN')
-            ->groupBy('TANGGAL_PEMBELIAN')
+            ->select('ID_PEMESANAN', 'TANGGAL_PEMBELIAN','ACC')
+            ->where('ACC', 1)
+            ->groupBy('ID_PEMESANAN','TANGGAL_PEMBELIAN','ACC')
+            ->orderBy('ACC', 'desc')
             ->get();
 
         $dataBarang = DB::table('pembelian as pb')
@@ -307,9 +395,12 @@ class HomeController extends Controller
                 ->get();
         } else {
             $data = DB::table('masuk as ms')
+                ->select('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
                 ->join('barang as ba', 'ba.ID_BARANG', '=', 'ms.ID_BARANG')
+                ->join('pembelian as pb', 'ms.ID_PEMESANAN', '=', 'pb.ID_PEMESANAN')
                 ->join('karyawan as ka', 'ka.ID_KAR', '=', 'ms.ID_KAR')
                 ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ms.ID_SUPPLIER')
+                ->groupBy('ba.NAMA_BARANG', 'sp.NAMA_SUPPLIER', 'ms.TANGGAL_MASUK', 'pb.ID_PEMESANAN', 'ms.JML_BARANG_MSK', 'ms.HARGA_BARANG_MASUK', 'ms.ID_MASUK', 'pb.TANGGAL_PEMBELIAN', 'ka.NAMA_KAR')
                 ->get();
         }
         $data1 = DB::table('barang')
@@ -329,10 +420,11 @@ class HomeController extends Controller
         $toDate = $request->get('toFilterDate');
         $namaBarang = $request->get('namaBarang');
 
-        $data = DB::table('keluar as kl')
+        $data = DB::table('detail_keluar as kl')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'kl.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'kl.ID_KAR')
             ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
+            ->where('STATUS_PENDING', 0)
             ->whereBetween('kl.TANGGAL_KELUAR', [$fromDate, $toDate])
             ->get();
 
@@ -352,19 +444,21 @@ class HomeController extends Controller
         $toDate = $request->to;
         $namaBarang = $request->search;
 
-        $data = DB::table('keluar as kl')
+        $data = DB::table('detail_keluar as kl')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'kl.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'kl.ID_KAR')
             ->where('ba.NAMA_BARANG', 'like', '%' . $namaBarang . '%')
+            ->where('STATUS_PENDING', 0)
             ->whereBetween('kl.TANGGAL_KELUAR', [$fromDate, $toDate])
+            ->orderBy('kl.TANGGAL_KELUAR','ASC')
             ->get();
 
 
-        $pdf = PDF::loadView('gudang/transaksikeluar/pdf', [
-            'from' => $fromDate,
-            'to' => $toDate,
-            'DaftarBarangKeluar' => $data
-        ])->setPaper('a4', 'landscape');
+        // $pdf = PDF::loadView('gudang/transaksikeluar/pdf', [
+        //     'from' => $fromDate,
+        //     'to' => $toDate,
+        //     'DaftarBarangKeluar' => $data
+        // ])->setPaper('a4', 'landscape');
 
         // foreach ($data as  $q) {
 
@@ -376,14 +470,20 @@ class HomeController extends Controller
         // }
 
 
-        return $pdf->download('Laporan-transaksi-barang-keluar.pdf');
+        return View('gudang/transaksikeluar/pdf')
+            ->with('from', $fromDate)
+            ->with('to', $toDate)
+            ->with('DaftarBarangKeluar', $data);
+
+        // return $pdf->stream('Laporan-transaksi-barang-keluar.pdf');
     }
 
     public function TampilBarangKeluar(Request $request)
     {
-        $data = DB::table('keluar as kl')
+        $data = DB::table('detail_keluar as kl')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'kl.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'kl.ID_KAR')
+            ->where('STATUS_PENDING', 0)
             ->get();
 
         $data1 = DB::table('barang')
@@ -397,9 +497,10 @@ class HomeController extends Controller
 
     public function tampilExportBarangKeluar()
     {
-        $data = DB::table('keluar as kl')
+        $data = DB::table('detail_keluar as kl')
             ->join('barang as ba', 'ba.ID_BARANG', '=', 'kl.ID_BARANG')
             ->join('karyawan as ka', 'ka.ID_KAR', '=', 'kl.ID_KAR')
+            ->where('STATUS_PENDING', 0)
             ->get();
 
         $data1 = DB::table('barang')
@@ -430,7 +531,10 @@ class HomeController extends Controller
     public function TampilTambahBarangKeluar(Request $request)
     {
 
-        $data1 = DB::table('barang')
+        $data1 = DB::table('barang as ba')
+            ->join('safety_stock as ss', 'ss.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->where('ss.STATUS_SS', '1')
+            ->whereColumn('ba.STOCK_BARANG', '>', 'ss.NILAI_SS')
             ->get();
 
         return View('gudang/transaksikeluar/barangkeluar')
@@ -442,8 +546,14 @@ class HomeController extends Controller
         $data1 = DB::table('barang')
             ->where('ID_BARANG', '=', $ID_BARANG)
             ->first();
+        $safety_stock = DB::table('safety_stock')
+            ->where('STATUS_SS', '=', '1')
+            ->where('ID_BARANG', '=', $ID_BARANG)
+            ->first();
+
         return View('gudang/transaksikeluar/ajax')
-            ->with('DaftarBarang', $data1);
+            ->with('DaftarBarang', $data1)
+            ->with('safety_stock', $safety_stock);
     }
 
     public function TampilTambahBarangMasukAjax(Request $request)
@@ -455,6 +565,39 @@ class HomeController extends Controller
             ->first();
         return View('gudang/transaksimasuk/ajax')
             ->with('DaftarSupplier', $data1);
+    }
+
+    public function cariidpemesananbarangmasukAjax(Request $request)
+    {
+        $ID_BARANG = $request->ID_BARANG;
+        $data1 = DB::table('pembelian')
+            ->where('ID_BARANG', $ID_BARANG)
+            ->where('STATUS', 0)
+            ->get();
+        return View('gudang/transaksimasuk/ajax_idpemesanan')
+            ->with('DaftarPesanan', $data1)
+            ->with('ID_BARANG', $ID_BARANG);
+    }
+
+    public function carijmlpemesananbarangAjax(Request $request)
+    {
+        $ID_PEMESANAN = $request->ID_PEMESANAN;
+        $ID_BARANG = $request->ID_BARANG;
+        $data1 = DB::table('pembelian')
+            ->where('ID_PEMESANAN', $ID_PEMESANAN)
+            ->where('ID_BARANG', $ID_BARANG)
+            ->where('STATUS', 0)
+            ->first();
+        $data2 = DB::table('masuk')
+            ->select(DB::raw('SUM(JML_BARANG_MSK) JML_BARANG_MSK'))
+            ->where('ID_PEMESANAN', $ID_PEMESANAN)
+            ->where('ID_BARANG', $ID_BARANG)
+            ->groupBy('ID_BARANG', 'ID_PEMESANAN')
+            ->first();
+        if ($data2 === null) {
+            $data2 = (object) array('JML_BARANG_MSK' => 0);
+        }
+        return ($data1->JML_PESAN - $data2->JML_BARANG_MSK);
     }
 
     public function tampilExportBarangMasuk(Request $request)
@@ -528,7 +671,7 @@ class HomeController extends Controller
             ->where('rp.STATUS_ROP', 1)
             ->groupBy('rp.ID_ROP', 'ss.ID_BARANG', 'ss.NAMA_BARANG', 'ss.STOCK_BARANG', 'rp.NILAI_ROP', 'eq.NILAI_EOQ', 'sp.NAMA_SUPPLIER')
             ->get();
-        // dd($data);
+        //dd($data);
 
         $status = [
             'STATUS_ROP' => 0
@@ -550,8 +693,11 @@ class HomeController extends Controller
             ->join('eoq as eq', 'eq.ID_BARANG', '=', 'ss.ID_BARANG')
             ->join('supplier as sp', 'sp.ID_SUPPLIER', '=', 'ss.ID_SUPPLIER')
             ->where('rp.STATUS_ROP', 1)
+            ->where('eq.STATUS_EOQ', 1)
             ->groupBy('rp.ID_ROP', 'ss.ID_BARANG', 'ss.NAMA_BARANG', 'ss.STOCK_BARANG', 'rp.NILAI_ROP', 'eq.NILAI_EOQ', 'sp.NAMA_SUPPLIER')
             ->get();
+
+            // dd($data);
 
         return View('gudang/operasibarang/databarangrop/dataBarangKurang')
             ->with('DataBarangRop', $data);

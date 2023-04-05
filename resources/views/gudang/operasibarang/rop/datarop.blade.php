@@ -32,7 +32,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">Data Reorder </h4>
+                                <h4 class="card-title">Data Reorder Point </h4>
                                 <a class="btn btn-primary btn-round ml-auto" href="tambahROP">
                                     <i class="fa fa-plus"></i>
                                     Tambah Data
@@ -50,7 +50,7 @@
                                             <th>Tanggal</th>
                                             <th>Nilai Reorder Point</th>
                                             <th>Status</th>
-                                            <th>Aksi</th>
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
 
@@ -73,9 +73,9 @@
                                             @endif
 
 
-                                            <td>
+                                            {{-- <td>
                                                 <a href="#ModalHapusROP{{ $item->ID_ROP }}" data-toggle="modal" class="btn btn-danger btn-xs"> <i class="fa fa-trash"> Hapus</i></a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @php
                                         $no++;

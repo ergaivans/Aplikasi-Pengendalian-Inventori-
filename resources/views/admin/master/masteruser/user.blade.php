@@ -22,7 +22,7 @@
                             <i class="flaticon-right-arrow"></i>
                         </li>
                         <li class="nav-item">
-                            <a href="#">Daftar Karyawan</a>
+                            <a href="#">Daftar Master Karyawan</a>
                         </li>
                     </ul>
                 </div>
@@ -35,7 +35,7 @@
                                     <h4 class="card-title">Data Master Karyawan</h4>
                                     <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#ModalTambahUser">
                                         <i class="fa fa-plus"></i>
-                                        Add Row
+                                        Tambah Karyawan
                                     </button>
                                 </div>
                             </div>

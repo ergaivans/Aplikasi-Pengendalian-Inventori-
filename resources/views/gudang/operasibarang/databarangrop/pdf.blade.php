@@ -43,10 +43,14 @@
 <body>
     <div class="container">
         <div class="header" align="center">
-            <span class="mt-5 mb-2">CV Keke Saputra</span>
+            <div class='d-flex justify-content-center w-100'>
+                <img src="{{ asset('./assets/img/kop.jpg') }}" style='height: 230px'/>
+            </div>
+            <div style='height: 4px; background-color: black; width: 100%' class='mb-3'></div>
+            {{-- <span class="mt-5 mb-2">CV Keke Saputra</span>
             <br><br>
 
-            <span class="mt-2 mb-2">Jl.Kri Pulau Rani D/24 Surabaya Jawa Timur</span>
+            <span class="mt-2 mb-2">Jl.Kri Pulau Rani D/24 Surabaya Jawa Timur</span> --}}
             <h2>Daftar Rencana Pembelian Barang</h2>
         </div>
 
@@ -60,7 +64,7 @@
             </div>
         </div>
         <div class="table-responsive mt-4">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="1" cellspacing="" cellpadding="4" width="100%">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -104,9 +108,9 @@
         </div>
         <div class="row">
             <div class="col" align="left">
-                <span><b>Total Nilai Barang Berdasarkan Filter</b></span>
+                <span style="font-size: 20px"><b>Total Nilai Barang Berdasarkan Filter</b></span>
             </div>
-            <div class="col" align="right">
+            <div class="col" align="right" style='font-weight: 700; font-size: 20px'>
                 @php echo "Rp " . number_format($totalSemua ,2,',','.'); @endphp
             </div>
         </div>
@@ -121,5 +125,10 @@
 
 
 </body>
-
+<script>
+    $(document).ready(function(){
+        window.onafterprint = window.close;
+        window.print();
+    });
+</script>
 </html>

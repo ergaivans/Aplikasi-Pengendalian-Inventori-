@@ -5,19 +5,24 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    @foreach ($dataKurang as $item)
-                        <div class="col-sm">
-                            <div class="alert alert-warning mt-3 ml-auto" role="alert">
-                                Stok barang {{ $item->NAMA_BARANG }} kurang dari rop!!
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                    @isset($dataKurang)
+                    <div class="col-sm" id="notifyAlert">
+                        <div data-notify="container" data-notify-position="top-center" class="alert alert-warning mt-3 ml-auto" role="alert">
+                            <span data-notify="title">Peringatan</span>
+                            <span data-notify="message">Terdapat Barang Kurang Dari Stock Minimal Inventori !!!!</span>
+                            <button type="button" aria-hidden="true" onclick="closeNotify()" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button>
+                            <a href="/barang-kurang" data-notify="url" style="height: 100%; left: 0px; position: absolute; top: 0px; width: 100%; z-index: 1032;"></a>
                         </div>
-                    @endforeach
+                    </div>
+                    <script>
+                        function closeNotify(){
+                            document.getElementById("notifyAlert").style.display="none";
+                        }
+                    </script>
+                    @endisset
                 </div>
             </div>
-            <div class="page-inner">
+            <div class="page-inner pb-0">
                 <div class="page-header">
                     <h4 class="page-title">Dashboard</h4>
                 </div>
@@ -63,7 +68,7 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Data Barang Masuk'
+                    text: 'Data Barang Masuk Bulan {{date("F Y")}}'
                 },
                 accessibility: {
                     announceNewData: {
@@ -109,7 +114,7 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Data Barang Keluar'
+                    text: 'Data Barang Keluar Bulan {{date("F Y")}}'
                 },
                 accessibility: {
                     announceNewData: {

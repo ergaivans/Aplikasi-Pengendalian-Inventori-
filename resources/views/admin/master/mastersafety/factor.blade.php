@@ -50,7 +50,7 @@
                                                 <th>Tanggal Safety Factor</th>
                                                 <th>Nilai Safety Factor</th>
                                                 <th>Status</th>
-                                                <th>Aksi</th>
+                                                {{-- <th>Aksi</th> --}}
                                             </tr>
                                         </thead>
 
@@ -71,9 +71,9 @@
                                                     <td><button class="btn btn-warning">Aktif</button></td>
                                                     @endif
 
-                                                    <td>
+                                                    {{-- <td>
                                                         <a href="#ModalHapusSafety{{ $item->ID_SAFETY }}" data-toggle="modal" class="btn btn-danger btn-xs"> <i class="fa fa-trash"> Hapus</i></a>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                                 @php
                                                     $no++;

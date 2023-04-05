@@ -43,29 +43,33 @@
 <body>
     <div class="container">
         <div class="header" align="center">
-            <span class="mt-5 mb-2">CV Keke Saputra</span>
-            <br><br>
-
-            <span class="mt-2 mb-2">Jl.Kri Pulau Rani D/24 Surabaya Jawa Timur</span>
+            <div class='d-flex justify-content-center w-100'>
+                <img src="{{ asset('./assets/img/kop.jpg') }}" style='height: 230px'/>
+            </div>
+            <div style='height: 4px; background-color: black; width: 100%' class='mb-3'></div>
             <h1>Laporan Barang Masuk</h1>
             <span>Periode <b> {{ Carbon\Carbon::parse($from)->format('d  M  Y') }} - {{ Carbon\Carbon::parse($to)->format('d  M  Y') }}</b></small>
         </div>
 
         <br>
         <div class="row">
-            <div class="col-md-6" align="left">
+            <div class="col" align="left">
                 <b>{{ Session::get('user')[1] }}</b>
             </div>
-            <div class="col-md-6" align="right">
+            <div class="col" align="right">
                 <b>Tanggal Export : </b>{{ date('d-m-Y') }}
             </div>
         </div>
         <div class="table-responsive mt-3">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="1" cellspacing="" cellpadding="4" width="100%">
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Nama Barang</th>
+                        <th>Supplier</th>
+                        <th>Tanggal Masuk</th>
+                        <th>ID Pemesanan</th>
+                        <th>Karyawan</th>
                         <th>Jumlah Masuk</th>
                         <th>Nominal Barang</th>
                         <th>Total Nilai</th>
@@ -86,6 +90,10 @@
                     <tr>
                         <td>{{ $no }}</td>
                         <td>{{ $item->NAMA_BARANG }}</td>
+                        <td>{{ $item->NAMA_SUPPLIER }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->TANGGAL_MASUK )->format('d / M / Y') }}</td>
+                        <td>{{ $item->ID_PEMESANAN }}</td>
+                        <td>{{ $item->NAMA_KAR }}</td>
                         <td>{{ $item->JML_BARANG_MSK }} Unit</td>
 
                         <td> @php echo "Rp " . number_format($item->HARGA_BARANG_MASUK ,2,',','.'); @endphp </td>
@@ -107,10 +115,10 @@
             <br><br><br>
         </div>
         <div class="row">
-            <div class="col-md-6" align="left">
-                <span><b>Total Nilai Barang Berdasarkan Filter</b></span>
+            <div class="col-md-6" align="left" >
+                <span style="font-size: 20px"><b>Total Nilai Barang Berdasarkan Filter</b></span>
             </div>
-            <div class="col-md-6" align="right">
+            <div class="col-md-6" align="right" style='font-weight: 700; font-size: 20px'>
                 @php echo "Rp " . number_format($totalSemua ,2,',','.'); @endphp
             </div>
         </div>
@@ -125,5 +133,11 @@
 
 
 </body>
+<script>
+    $(document).ready(function(){
+        window.onafterprint = window.close;
+        window.print();
+    });
+</script>
 
 </html>

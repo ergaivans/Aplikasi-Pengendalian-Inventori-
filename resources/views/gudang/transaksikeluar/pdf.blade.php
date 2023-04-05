@@ -8,7 +8,10 @@
     <title>Laporan Transaksi Masuk</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-
+    <script
+    src="https://code.jquery.com/jquery-3.6.1.min.js"
+    integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+    crossorigin="anonymous"></script>
 
     <style>
         /* body {
@@ -43,10 +46,10 @@
 <body>
     <div class="container">
         <div class="header" align="center">
-            <span class="mt-5 mb-2">CV Keke Saputra</span>
-            <br><br>
-
-            <span class="mt-2 mb-2">Jl.Kri Pulau Rani D/24 Surabaya Jawa Timur</span>
+            <div class='d-flex justify-content-center w-100'>
+                <img src="{{ asset('./assets/img/kop.jpg') }}" style='height: 230px'/>
+            </div>
+            <div style='height: 4px; background-color: black; width: 100%' class='mb-3'></div>
             <h1>Laporan Barang Keluar</h1>
             <span>Periode <b> {{ Carbon\Carbon::parse($from)->format('d  M  Y') }} - {{ Carbon\Carbon::parse($to)->format('d  M  Y') }}</b></small>
         </div>
@@ -61,7 +64,7 @@
             </div>
         </div>
         <div class="table-responsive mt-4">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="1" cellspacing="" cellpadding="4" width="100%">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -80,13 +83,13 @@
                     @endphp
                     @if (!empty($DaftarBarangKeluar))
                     @foreach ($DaftarBarangKeluar as $item)
-                    <?php $total_nilai = $item->JML_KELUAR * $item->HARGA_BARANG;
+                    <?php $total_nilai = $item->JML_UNIT * $item->HARGA_BARANG;
                     $totalSemua += $total_nilai ?>
                     <tr>
                         <td style="width:2%;">{{ $no }}</td>
                         <td style="width:18%;">{{ $item->NAMA_BARANG }}</td>
                         <td style="width:20%;">{{ Carbon\Carbon::parse($item->TANGGAL_KELUAR)->format('d / M / Y') }}</td>
-                        <td style="width:15%;">{{ $item->JML_KELUAR }} Unit</td>
+                        <td style="width:15%;">{{ $item->JML_UNIT }} Unit</td>
                         <td style="width:20%;"> @php echo "Rp " . number_format( $item->HARGA_BARANG ,2,',','.'); @endphp </td>
                         <td style="width:25%;"> @php echo "Rp " . number_format( $total_nilai ,2,',','.'); @endphp </td>
                     </tr>
@@ -106,22 +109,23 @@
         </div>
         <div class="row">
             <div class="col" align="left">
-                <span><b>Total Nilai Barang Berdasarkan Filter</b></span>
+                <span style="font-size: 20px"><b>Total Nilai Barang Berdasarkan Filter</b></span>
             </div>
-            <div class="col" align="right">
+            <div class="col" align="right" style='font-weight: 700; font-size: 20px'>
                 @php echo "Rp " . number_format($totalSemua ,2,',','.'); @endphp
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous">
     </script>
-
-
 </body>
-
+<script>
+    $(document).ready(function(){
+        window.onafterprint = window.close;
+        window.print();
+    });
+</script>
 </html>

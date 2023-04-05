@@ -36,8 +36,14 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col mt-3">
-                                    <h4 class="card-title">Data Barang Masuk</h4>
+                                    <h4 class="card-title">Data Barang Keluar</h4>
                                     <p>Menampilkan data <b>'{{$namaBarang}}'</b> dari tanggal {{ Carbon\Carbon::parse($fromDate)->format('d M Y') }} sampai tanggal {{ Carbon\Carbon::parse($toDate)->format('d M Y') }}</p>
+                                </div>
+                                <div class="col-md-auto mt-2">
+                                    <a class="btn btn-danger btn-round ml-auto" target="_blank" href="/transaksibarangkeluar/export?from={{$fromDate}}&to={{$toDate}}&search={{$namaBarang}}">
+                                        <i class="fa fa-plus"></i>
+                                        Export PDF
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -71,10 +77,10 @@
                                             <td>{{ $item->NAMA_BARANG }}</td>
                                             <td>{{ $item->TANGGAL_KELUAR }}</td>
                                             <td>{{ $item->NAMA_KAR }}</td>
-                                            <td>{{ $item->JML_KELUAR }} Unit</td>
+                                            <td>{{ $item->JML_UNIT }} Unit</td>
                                             <td> @php echo "Rp " . number_format( $item->HARGA_BARANG ,2,',','.'); @endphp </td>
 
-                                            <td> @php echo "Rp " . number_format($item->JML_KELUAR * $item->HARGA_BARANG ,2,',','.'); @endphp </td>
+                                            <td> @php echo "Rp " . number_format($item->JML_UNIT * $item->HARGA_BARANG ,2,',','.'); @endphp </td>
                                             <td>{{ $item->KET_KELUAR }}</td>
                                             <td>
                                                 <a href="#ModalHapusBarang{{ $item->ID_KELUAR }}" data-toggle="modal" class="btn btn-danger btn-xs"> <i class="fa fa-trash"> Hapus</i></a>

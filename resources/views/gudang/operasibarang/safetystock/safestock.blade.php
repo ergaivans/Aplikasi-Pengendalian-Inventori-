@@ -32,7 +32,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="d-flex align-items-center">
-                                    <h4 class="card-title">Data Barang Masuk</h4>
+                                    <h4 class="card-title">Data Safety Stock Barang</h4>
                                     <a class="btn btn-primary btn-round ml-auto" href="tambahsafetystock">
                                         <i class="fa fa-plus"></i>
                                         Tambah Data
@@ -50,7 +50,7 @@
                                                 <th>Tanggal</th>
                                                 <th>Nilai Safety Stock</th>
                                                 <th>Status</th>
-                                                <th>Aksi</th>
+                                                {{-- <th>Aksi</th> --}}
                                             </tr>
                                         </thead>
 
@@ -73,11 +73,11 @@
                                                    @endif
 
 
-                                                    <td>
+                                                    {{-- <td>
                                                         <a href="#ModalHapusSafetyStock{{ $item->ID_SS }}"
                                                             data-toggle="modal" class="btn btn-danger btn-xs"> <i
                                                                 class="fa fa-trash"> Hapus</i></a>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                                 @php
                                                     $no++;

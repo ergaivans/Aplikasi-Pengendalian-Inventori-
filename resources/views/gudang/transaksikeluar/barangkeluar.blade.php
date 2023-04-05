@@ -33,7 +33,7 @@
                             <div class="card-title">Tambah Barang Keluar</div>
                         </div>
                         <div class="card-body">
-                            {!! Form::open(['url' => '/TambahDataBarangKeluar', 'enctype' => 'multipart/form-data']) !!}
+                            {!! Form::open(['url' => '/TambahDataBarangKeluar', 'enctype' => 'multipart/form-data', 'onsubmit' => 'check(event);']) !!}
 
                             <div class="form-group">
                                 <label>Nama Barang</label>
@@ -47,7 +47,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" id="hargabarang"></div>
+                            <div id="hargabarang"></div>
 
                             <div class="form-group">
                                 <label>Nama Karyawan</label>
@@ -59,40 +59,23 @@
                                 <label>Tanggal Keluar</label>
                                 <input type="date" class="form-control" name="tgl_keluar" placeholder="Masukkan Tanggal Keluar Barang" required>
                             </div>
-                            <div class="form-group">
-                                <label>Jumlah Keluar</label>
-                                <input type="number" onkeyup="perkalian(this.value)" class="form-control" name="jml_keluar" placeholder="Masukkan Jumlah Keluar Barang" min="0" required>
-                            </div>
 
-                            <div class="form-group">
-                                <label>Total Harga Keluar Keluar</label>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Rp</span>
-                                    </div>
-                                    <input type="number" id="tot_keluar" class="form-control" name="tot_keluar" placeholder="Masukkan Jumlah Keluar Barang" readonly required>
-                                </div>
-                            </div>
 
                             <div class="form-group">
                                 <label>Keterangan</label>
                                 <select class="form-control" name="keterangan" required>
                                     <option value="" hidden>---- Pilih Keterangan ----</option>
-                                    <option value="Pengiriman"> Pengiriman</option>
+                                    <option value="Pengiriman">Pengiriman</option>
                                     <option value="Display">Display</option>
-
                                 </select>
                             </div>
-
-
-
 
                         </div>
                         <div class="card-action">
                             <button type="submit" class="btn btn-success">Tambahkan </button>
                             <a href="transaksibarangkeluar" class="btn btn-danger">Cancel</a>
                         </div>
-
+                        <input type="hidden" value="0" id="pending" name="pending">
                         {!! Form::close() !!}
                     </div>
 
@@ -119,9 +102,33 @@
         });
     }
 
-    function perkalian(val) {
-        document.getElementById("tot_keluar").value = document.getElementById("harga_keluar").value * val;
+    function check(e){
+        let jml_pembelian = parseInt(document.getElementById('jml_keluar').value);
+        let jml_maxBeli = document.getElementById('jml_keluar').getAttribute('data-beli');
+        if(jml_pembelian > jml_maxBeli){
+            stat = confirm('Sisa transaksi sejumlah '+(jml_pembelian-jml_maxBeli)+' unit akan masuk sebagai pending');
+            //set hidden value
+            document.getElementById('barangPending').value = jml_pembelian - jml_maxBeli;
+            document.getElementById('barangKeluar').value = jml_maxBeli;
+
+            document.getElementById('pending').value = 1;
+            if(stat){
+                return true;
+            } else {
+                e.preventDefault();
+                return false;
+            }
+        } else {
+            //set hidden value
+            document.getElementById('barangPending').value = 0;
+            document.getElementById('barangKeluar').value = jml_pembelian;
+
+            document.getElementById('pending').value = 0;
+            return true;
+        }
     }
+
+
 </script>
 
 

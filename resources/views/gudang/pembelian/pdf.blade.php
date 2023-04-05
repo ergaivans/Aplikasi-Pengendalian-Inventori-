@@ -56,11 +56,11 @@
                 <b>{{ Session::get('user')[1] }}</b>
             </div>
             <div class="col" align="right">
-                <b>Tanggal Export : </b>{{ date('d-m-Y') }}
+                <b>Tanggal Pembelian : </b>{{  Carbon\Carbon::parse($DataBarangRop[0]->TANGGAL_PEMBELIAN)->format('d / M / Y') }}
             </div>
         </div>
         <div class="table-responsive mt-4">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="1"  cellpadding="4" width="100%">
                 <thead>
                     <tr>
                         <th>No</th>

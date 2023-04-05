@@ -50,7 +50,6 @@
                                                 <th>Tanggal Input Operasi</th>
                                                 <th>Waktu Tunggu</th>
                                                 <th>Nilai Biaya Pemesanan</th>
-                                                <th>Nilai Kebutuhan Barang Pertahun</th>
                                                 <th> Status Data </th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -68,8 +67,6 @@
                                                     <td> Tahun {{ Carbon\Carbon::parse($item->TANGGAL_OP)->format('Y') }}</td>
                                                     <td>{{ $item->LEAD_TIME }} Hari</td>
                                                     <td> @php   echo "Rp " . number_format( $item->BIAYA_PEMESANAN ,2,',','.');;  @endphp </td>
-                                                    <td>{{ $item->KEBUTUHAN_BARANG_BL }} Unit </td>
-
                                                     @if ($item->STATUS_OP == 0  )
                                                     <td><button class="btn btn-secondary">Non-Aktif</button></td>
                                                     @else
@@ -141,10 +138,6 @@
                     <div class="form-group">
                         <label >Nilai Biaya Pemesanan</label>
                         <input type="number" step="0.01" class="form-control" name="nilai_biayapem" placeholder="Masukkan Nilai Biaya Pemesanan" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label >Kebutuhan Barang Pertahun</label>
-                        <input type="number" step="0.01" class="form-control" name="nilai_kebbarang" placeholder="Masukkan Nilai Kebutuhan Pertahun" min="0" required>
                     </div>
                     <div class="form-group">
                         <label >Status</label>

@@ -52,7 +52,7 @@
                                                 <th>Nilai Biaya Simpan</th>
                                                 <th>Nilai EOQ</th>
                                                 <th>Status</th>
-                                                <th>Aksi</th>
+                                                {{-- <th>Aksi</th> --}}
                                             </tr>
                                         </thead>
 
@@ -68,7 +68,7 @@
                                                     <td>{{ Carbon\Carbon::parse($item->TANGGAL_EOQ)->format('d / M / Y') }}</td>
                                                     <td>{{ $item->PERSEN_SIMPAN }} %</td>
                                                     <td> @php   echo "Rp " . number_format($item->BIAYA_SIMPAN ,2,',','.');  @endphp </td>
-                                                    <td>{{ $item->NILAI_EOQ }} %</td>
+                                                    <td>{{ $item->NILAI_EOQ }} Unit</td>
                                                    @if ($item->STATUS_EOQ == 0  )
                                                    <td><button class="btn btn-secondary">Non-Aktif</button></td>
                                                    @else
@@ -76,11 +76,11 @@
                                                    @endif
 
 
-                                                    <td>
+                                                    {{-- <td>
                                                         <a href="#ModalHapusEOQ{{ $item->ID_EOQ }}"
                                                             data-toggle="modal" class="btn btn-danger btn-xs"> <i
                                                                 class="fa fa-trash"> Hapus</i></a>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                                 @php
                                                     $no++;

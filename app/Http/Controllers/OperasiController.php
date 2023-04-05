@@ -19,7 +19,6 @@ class OperasiController extends Controller
             'TANGGAL_OP' => $request->input('tgl_masuk'),
             'LEAD_TIME' => $request->input('nilai_lead'),
             'BIAYA_PEMESANAN' => $request->input('nilai_biayapem'),
-            'KEBUTUHAN_BARANG_BL' => $request->input('nilai_kebbarang'),
             'STATUS_OP' => $request->input('status'),
         );
 

@@ -6,6 +6,7 @@
     <title>Aplikasi Pengendalian Inventori</title>
     <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
     <link rel="icon" href="{{ asset('./assets/img/icon.ico') }}" type="image/x-icon" />
+    <script src="{{ asset('./assets/js/core/jquery.3.2.1.min.js') }}"></script>
 
 
 
@@ -44,8 +45,8 @@
             <!-- Logo Header -->
             <div class="logo-header">
 
-                <a href="#" class="logo">
-                    {{-- <img src="public/assets/img/" alt="navbar brand" class="navbar-brand"> --}}
+                <a href="#" class="logo px-3">
+                    <img src="{{ asset('./assets/img/greven-03.png') }}" style="height: 85%" alt="navbar brand" class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
                     data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,6 +158,8 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+                        @if (Session::get('user')[2] != 2)
+
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>
@@ -165,7 +168,9 @@
                         </li>
 
 
+
                         {{-- disebar karyawan --}}
+                        @if (Session::get('user')[2] == 1)
                         <li class="nav-item">
                             <a data-toggle="collapse" href="#karyawan">
                                 <i class="fa fa-user"></i>
@@ -182,24 +187,26 @@
                                 </ul>
                             </div>
                         </li>
-
-
+                        @endif
 
                         {{-- Master Barang --}}
                         <li class="nav-item">
                             <a data-toggle="collapse" href="#transaksimaster">
 
                                 <i class="fas fa-box-open"></i>
-                                <p>Transaksi Master</p>
+                                <p> Master Data </p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse" id="transaksimaster">
                                 <ul class="nav nav-collapse">
+                                    @if (Session::get('user')[2] == 1)
                                     <li>
                                         <a href="{{ url('mastersupplier') }}">
                                             <span class="sub-item">Master Supplier</span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if (Session::get('user')[2] != 1 )
                                     <li>
                                         <a href="{{ url('masterkategori') }}">
                                             <span class="sub-item">Master Kategori</span>
@@ -210,20 +217,26 @@
                                             <span class="sub-item">Master Barang</span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if (Session::get('user')[2] == 1)
                                     <li>
                                         <a href="{{ url('masterfactor') }}">
                                             <span class="sub-item">Master Safety Factor</span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if (Session::get('user')[2] == 1)
                                     <li>
                                         <a href="{{ url('masteroperasi') }}">
                                             <span class="sub-item">Master Operasi</span>
                                         </a>
                                     </li>
+                                    @endif
 
                                 </ul>
                             </div>
                         </li>
+                        @if (Session::get('user')[2] != 1)
                         {{-- disebar Transaksi barang --}}
                         <li class="nav-item">
                             <a data-toggle="collapse" href="#transaksibarang">
@@ -243,6 +256,11 @@
                                             <span class="sub-item">Barang Keluar</span>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('transaksibarangpending') }}">
+                                            <span class="sub-item">Barang Pending</span>
+                                        </a>
+                                    </li>
 
                                 </ul>
                             </div>
@@ -251,36 +269,79 @@
                         <li class="nav-item">
                             <a data-toggle="collapse" href="#transaksioperasi">
                                 <i class="fas fa-money-bill-wave    "></i>
-                                <p>Operasi Barang</p>
+                                <p>Perhitungan Barang</p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse" id="transaksioperasi">
                                 <ul class="nav nav-collapse">
                                     <li>
+                                        <a href="{{ url('kebutuhanbarang') }}">
+                                            <span class="sub-item">Perhitungan Kebutuhan Barang</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('PerhitunganBarang') }}">
+                                            <span class="sub-item">Perhitungan Nilai Barang</span>
+                                        </a>
+                                    </li>
+                                    {{-- <li>
+                                        <a href="{{ url('mastersd') }} ">
+                                            <span class="sub-item">Perhitungan Standard Deviation</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="{{ url('masterss') }}">
-                                            <span class="sub-item">Operasi Safety Stock</span>
+                                            <span class="sub-item">Perhitungan Safety Stock</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ url('masterrop') }}">
-                                            <span class="sub-item">Operasi Reorder Point</span>
+                                            <span class="sub-item">Perhitungan Reorder Point</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ url('mastereoq') }}">
-                                            <span class="sub-item">Operasi Economic Order Quantity</span>
+                                            <span class="sub-item">Perhitungan Economic Order Quantity</span>
                                         </a>
-                                    </li>
+                                    </li> --}}
 
                                     <li>
                                         <a href="{{ url('databarangrop') }}">
-                                            <span class="sub-item">Operasi Data Reorder Point</span>
+                                            <span class="sub-item">Perencanaan Pembelian Barang</span>
                                         </a>
                                     </li>
 
                                 </ul>
                             </div>
                         </li>
+                        @endif
+                        @endif
+
+                        @if (Session::get('user')[2] == 2)
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Menu Persetujuan</h4>
+                        </li>
+                        <li class="nav-item">
+                            <a data-toggle="collapse" href="#persetujuan">
+                                <i class="fa fa-shopping-cart"></i>
+                                <p>Persetujuan Pembelian</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="persetujuan">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a href="{{ url('persetujuanbarang') }}">
+                                            <span class="sub-item">Persetujuan Daftar Pembelian</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        @endif
+
 
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
@@ -288,6 +349,7 @@
                             </span>
                             <h4 class="text-section">Menu Laporan</h4>
                         </li>
+
 
                         {{-- disebar Transaksi barang --}}
                         <li class="nav-item">
@@ -299,28 +361,18 @@
                             <div class="collapse" id="transaksilaporan">
                                 <ul class="nav nav-collapse">
                                     <li>
-                                        <a href="{{ url('transaksibarangmasuk') }}">
-                                            <span class="sub-item">Laporan Rencana Pembelian</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ url('transaksibarangkeluar') }}">
-                                            <span class="sub-item">Laporan Keluar Masuk Barang</span>
-                                        </a>
-                                    </li>
-                                    <li>
                                         <a href="{{ url('export-barang-masuk') }}">
                                             <span class="sub-item">Laporan Transaksi Barang Masuk</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ url('export-barang-masuk') }}">
+                                        <a href="{{ url('export-barang-keluar') }}">
                                             <span class="sub-item">Laporan Transaksi Barang Keluar</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ url('pembelian') }}">
-                                            <span class="sub-item">Detail Pembelian</span>
+                                            <span class="sub-item">Laporan Rencana Pembelian Barang</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -334,7 +386,6 @@
         @yield('content')
     </div>
     <!--   Core JS Files   -->
-    <script src="{{ asset('./assets/js/core/jquery.3.2.1.min.js') }}"></script>
     <script src="{{ asset('./assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('./assets/js/core/bootstrap.min.js') }}"></script>
     <!-- jQuery UI -->

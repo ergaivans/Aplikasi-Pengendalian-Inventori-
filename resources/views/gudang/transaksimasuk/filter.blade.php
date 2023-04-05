@@ -40,6 +40,12 @@
 
                                     <p>Menampilkan data <b>'{{$namaBarang}}'</b> dari tanggal {{ Carbon\Carbon::parse($fromDate)->format('d M Y') }} sampai tanggal {{ Carbon\Carbon::parse($toDate)->format('d M Y') }}</p>
                                 </div>
+                                  <div class="col-md-auto mt-2">
+                                    <a class="btn btn-danger btn-round ml-auto" target="_blank"  href="/transaksibarangmasuk/export?from={{$fromDate}}&to={{$toDate}}&search={{$namaBarang}}">
+                                        <i class="fa fa-plus"></i>
+                                        Export PDF
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -52,6 +58,7 @@
                                             <th>Nama Barang</th>
                                             <th>Supplier</th>
                                             <th>Tanggal</th>
+                                            <th>ID Pemesanan</th>
                                             <th>Nama Karyawan</th>
                                             <th>Jumlah</th>
                                             <th>Harga Barang Beli</th>
@@ -74,6 +81,7 @@
 
                                             <td>{{ Carbon\Carbon::parse($item->TANGGAL_MASUK)->format('d / M / Y') }}
                                             </td>
+                                            <td><a href="detail-pembelian/{{ $item->TANGGAL_PEMBELIAN }}">{{ $item->ID_PEMESANAN }}</a></td>
                                             <td>{{ $item->NAMA_KAR }}</td>
                                             {{-- <td>@php echo date_format( $item->TANGGAL_MASUK," %D %M %Y ") @endphp</td> --}}
 

@@ -5,7 +5,7 @@
     <div class="content">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Data Master Barang</h4>
+                <h4 class="page-title">Transaksi Barang Keluar</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
                         <a href="#">
@@ -16,13 +16,13 @@
                         <i class="flaticon-right-arrow"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Master Barang</a>
+                        <a href="#">Data Transaksi Barang Keluar</a>
                     </li>
                     <li class="separator">
                         <i class="flaticon-right-arrow"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Daftar Barang</a>
+                        <a href="#">Transaksi Barang Keluar</a>
                     </li>
                 </ul>
                 <div class="ml-auto">
@@ -60,7 +60,7 @@
                                             <th>Harga Barang</th>
                                             <th>Total</th>
                                             <th>Keterangan</th>
-                                            <th>Aksi</th>
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
 
@@ -75,14 +75,14 @@
                                             <td>{{ $item->NAMA_BARANG }}</td>
                                             <td>{{ $item->TANGGAL_KELUAR }}</td>
                                             <td>{{ $item->NAMA_KAR }}</td>
-                                            <td>{{ $item->JML_KELUAR }} Unit</td>
+                                            <td>{{ $item->JML_UNIT }} Unit</td>
                                             <td> @php echo "Rp " . number_format( $item->HARGA_BARANG ,2,',','.'); @endphp </td>
 
-                                            <td> @php echo "Rp " . number_format($item->JML_KELUAR * $item->HARGA_BARANG ,2,',','.'); @endphp </td>
+                                            <td> @php echo "Rp " . number_format($item->JML_UNIT * $item->HARGA_BARANG ,2,',','.'); @endphp </td>
                                             <td>{{ $item->KET_KELUAR }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 <a href="#ModalHapusBarang{{ $item->ID_KELUAR }}" data-toggle="modal" class="btn btn-danger btn-xs"> <i class="fa fa-trash"> Hapus</i></a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @php
                                         $no++;

@@ -11,7 +11,8 @@
                     </div>
                     <div class="col flo">
                         <p><b>{{ Session::get('user')[1] }}</b></p>
-                        <p><b>Tanggal : {{ date('d-M-Y') }}</b></p>
+                        <p><b>Tanggal : {{  Carbon\Carbon::parse($data[0]->TANGGAL_PEMBELIAN)->format('d / M / Y') }}</b></p>
+                        <p><b>ID Pembelian : {{ $data[0]->ID_PEMESANAN }}</b></p>
                     </div>
 
                 </div>
@@ -27,7 +28,8 @@
                                             <tr>
                                                 <th>Nama Barang</th>
                                                 <th>Nama Supplier</th>
-                                                <th>Jumlah Barang</th>
+                                                <th>Jumlah Pesanan</th>
+                                                <th>Jumlah Barang Diterima</th>
                                             </tr>
                                         </thead>
 
@@ -38,6 +40,7 @@
                                                         <td>{{ $item->NAMA_BARANG }}</td>
                                                         <td>{{ $item->NAMA_SUPPLIER }}</td>
                                                         <td>{{ $item->NILAI_EOQ }}</td>
+                                                        <td>{{ $item->JML_DITERIMA }}</td>
                                                     </tr>
                                                 @endforeach
                                             @else

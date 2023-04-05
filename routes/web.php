@@ -52,6 +52,9 @@ Route::get('/masterfactor', 'HomeController@TampilMasterFactor');
 //**TAMPILAN DATA OPERASI*/
 
 Route::get('/masteroperasi', 'HomeController@TampilMasterOperasi');
+//**TAMPILAN DATA STANDARD DEVIATION*/
+
+Route::get('/mastersd', 'DevisiasiStandard@TampilDataSD');
 
 //**TAMPILAN DATA SAFETY STOCK*/
 
@@ -64,6 +67,14 @@ Route::get('/masterrop', 'HomeController@TampilDataROP');
 //**TAMPILAN DATA ECONOMIC ORDER QUANTITY*/
 
 Route::get('/mastereoq', 'HomeController@TampilDataEOQ');
+
+//**TAMPILAN DATA Kebutuhan Barang*/
+Route::get('/kebutuhanbarang', 'DevisiasiStandard@TampilDataKebutuhan');
+Route::get('/detail-kebutuhan/{id}', 'DevisiasiStandard@TampilDetailDataKebutuhan');
+
+// Route::get('/kebutuhanbarang', 'DevisiasiStandard@TampilDataKebutuhan');
+Route::post('/ProsesTambahKebutuhanBaru', 'DevisiasiStandard@ProsesTambahKebutuhanBaru');
+Route::post('/importExcel', 'DevisiasiStandard@importExcel');
 
 
 Route::get('/databarangrop', 'HomeController@TampilDataBarangROP');
@@ -92,7 +103,10 @@ Route::post('/transaksibarangkeluar/filter', 'HomeController@exportBarangKeluar'
 Route::get('/transaksibarangkeluar/export/', 'HomeController@pdfBarangKeluar');
 Route::get('/export-barang-keluar', 'HomeController@tampilExportBarangKeluar');
 
+//**TAMPILAN TRANSAKSI BARANG PENDING */
 
+Route::get('/transaksibarangpending', 'TransaksiController@TampilBarangPending');
+Route::post('/UpdateDataPending', 'TransaksiController@ProsesUpdatePending');
 
 /////////----------TRANSAKSI TAMBAH-----------//////////
 
@@ -117,6 +131,13 @@ Route::get('/tambahROP', 'ROPController@TampilTambahROP');
 
 Route::get('/tambahEOQ', 'EOQController@TampilTambahEOQ');
 
+//**TAMPILAN STANDARD DEVIATION*/
+
+Route::get('/tambahStandard', 'DevisiasiStandard@TampilNilaiStandard');
+/**TAMPILAN STANDARD DEVIATION*/
+
+Route::get('/coba', 'DevisiasiStandard@perhitunganstandard');
+
 
 /////////----------AJAX-----------//////////
 
@@ -129,6 +150,10 @@ Route::get('/transaksitambahbarangkeluarAjax', 'HomeController@TampilTambahBaran
 
 Route::get('/transaksitambahbarangmasukAjax', 'HomeController@TampilTambahBarangMasukAjax');
 
+Route::get('/cariidpemesananbarangmasukAjax', 'HomeController@cariidpemesananbarangmasukAjax');
+
+Route::get('/carijmlpemesananbarangAjax', 'HomeController@carijmlpemesananbarangAjax');
+
 //**TAMPILAN TRANSAKSI SAFETY STOCK AJAX*/
 
 Route::get('/transaksisafetystockAjax', 'SafetyController@TampilSafetyStockAjax');
@@ -140,6 +165,12 @@ Route::get('/ajaxbisarop', 'ROPController@TampilOperasiROPAjax');
 //**TAMPILAN TRANSAKSI ECONOMIC ORDER QUANTUTY AJAX*/
 
 Route::get('/ajaxeoq', 'EOQController@TampilPerhitunganEOQAjax');
+
+//**TAMPILAN TRANSAKSI Perhitungan*/
+
+Route::get('/perhitunganajaxkeb', 'DevisiasiStandard@perhitunganstandard');
+
+
 
 /////////----------PROSES-----------//////////
 
@@ -225,3 +256,28 @@ Route::post('/TambahDataReorderPoint', 'ROPController@OperasiTambahROP');
 Route::post('/TambahDataEOQ', 'EOQController@OperasiTambahEOQ');
 
 Route::post('/TambahSafetyFactor', 'SafetyFactorController@ProsesTambahSafetyFactor');
+
+// ============STANDARD DEVISIASI=========///
+Route::post('/TambahKebutuhanBarang', 'DevisiasiStandard@OperasiTambahkebutuhan');
+
+Route::post('/TambahDataStandardDD', 'DevisiasiStandard@OperasiTambahStandardevisiasi');
+
+// ============Tampilan DATA Perhitungan =========///
+Route::get('/PerhitunganBarang', 'PerhitunganBarang@DaftarPerhitunganBarang');
+
+// ============Tampilan Tambah Perhitungan =========///
+Route::get('/TambahPerhitunganBarang', 'PerhitunganBarang@TambahPerhitunganBarang');
+
+// ============Perhitungan AJAX =========///
+Route::get('/ajaxPerhitungan', 'PerhitunganBarang@AjaxPerhitunganBarang');
+
+Route::post('/TambahDataPerhitunganBarang', 'PerhitunganBarang@OperasiTambahPerhitungan');
+
+//// Tampilan Persetujuan Barang ///
+Route::get('/persetujuanbarang', 'aceptpembelian@TampilPersetujuanPembelian');
+
+//// Tampilan Persetujuan Barang ///
+Route::get('/persetujuanbarang', 'aceptpembelian@TampilPersetujuanPembelian');
+// Tampil Detil Persetujuan barang
+Route::get('/detail-persetujuan-pembelian/{id}', 'aceptpembelian@TampilDetilPersetujuanPembelian');
+Route::post('/detail-persetujuan-pembelian/{id}', 'aceptpembelian@TambahPersetujuan');

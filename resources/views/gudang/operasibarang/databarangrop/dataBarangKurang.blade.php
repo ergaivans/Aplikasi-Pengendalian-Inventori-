@@ -5,7 +5,7 @@
     <div class="content">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Data Reorder Point</h4>
+                <h4 class="page-title">Data Perencanaan Pembelian Barang </h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
                         <a href="#">
@@ -16,13 +16,13 @@
                         <i class="flaticon-right-arrow"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Reorder Point</a>
+                        <a href="#">Perhitungan Barang </a>
                     </li>
                     <li class="separator">
                         <i class="flaticon-right-arrow"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="#">Daftar Data Reorder Point</a>
+                        <a href="#">Data Perencanaan Pembelian Barang</a>
                     </li>
                 </ul>
             </div>
@@ -36,10 +36,10 @@
                                     <h4 class="card-title">Data Reorder </h4>
                                 </div>
                                 <div class="ml-auto">
-                                    <a class="btn btn-primary btn-round ml-auto" href="/barang-kurang">
+                                    {{-- <a class="btn btn-primary btn-round ml-auto" href="/barang-kurang">
                                         <i class="fas fa-calculator"></i>
-                                        Barang < ROP </a>
-                                            <a class="btn btn-danger btn-round ml-auto" href="/export-barang-rop">
+                                        Barang < ROP </a> --}}
+                                            <a class="btn btn-danger btn-round ml-auto" target="_blank" href="/export-barang-rop">
                                                 <i class="fa fa-plus"></i>
                                                 Export Data
                                             </a>
@@ -70,7 +70,6 @@
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $item->NAMA_BARANG }}</td>
                                                 <td>{{ $item->NAMA_SUPPLIER }}</td>
-                                                </td>
                                                 <td>{{ $item->NILAI_EOQ }} Unit</td>
                                             </tr>
                                             @endif

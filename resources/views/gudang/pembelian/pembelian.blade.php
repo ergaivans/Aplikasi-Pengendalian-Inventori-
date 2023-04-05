@@ -43,7 +43,9 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Jenis Pembelian</th>
-                                                <th>Tanggal Pembelian</th>
+                                                <th> ID_PEMESANAN </th>
+
+                                                <th>Persetujuan</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -55,9 +57,15 @@
                                             @foreach ($countData as $item)
                                                 <tr>
                                                     <td>{{ $no }}</td>
-                                                    <td>Pembelian Barang</td>
-                                                    <td>{{ Carbon\Carbon::parse($item->TANGGAL_PEMBELIAN)->format('d / M / Y') }}
-                                                    </td>
+                                                    <td>Pembelian Barang Pada {{ Carbon\Carbon::parse($item->TANGGAL_PEMBELIAN)->format('d / M / Y') }}</td>
+                                                    <td> {{ $item->ID_PEMESANAN }}</td>
+                                                    <td>
+                                                        @if ($item->ACC == 0)
+                                                        <span class="badge badge-danger w-75">Perlu Persetujuan</span>
+                                                        @else
+                                                        <span class="badge badge-success w-75"> Telah Disetujui</span>
+                                                        @endif
+                                                        </td>
                                                     <td>
                                                         <a href="detail-pembelian/{{ $item->TANGGAL_PEMBELIAN }}"
                                                             class="btn btn-info btn-xs"> <i class="fa fa-info">

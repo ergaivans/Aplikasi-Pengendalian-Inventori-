@@ -5,7 +5,7 @@
     <div class="content">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Data Barang Masuk</h4>
+                <h4 class="page-title">Transaksi Barang Masuk</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
                         <a href="#">
@@ -58,11 +58,12 @@
                                             <th>Nama Barang</th>
                                             <th>Supplier</th>
                                             <th>Tanggal</th>
+                                            <th>ID Pemesanan</th>
                                             <th>Nama Karyawan</th>
-                                            <th>Jumlah</th>
+                                            <th>Jumlah Datang</th>
                                             <th>Harga Barang Beli</th>
                                             <th>Total</th>
-                                            <th>Aksi</th>
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,6 +79,7 @@
 
                                             <td>{{ Carbon\Carbon::parse($item->TANGGAL_MASUK)->format('d / M / Y') }}
                                             </td>
+                                            <td><a href="detail-pembelian/{{ $item->TANGGAL_PEMBELIAN }}">{{ $item->ID_PEMESANAN }}</a></td>
                                             <td>{{ $item->NAMA_KAR }}</td>
                                             {{-- <td>@php echo date_format( $item->TANGGAL_MASUK," %D %M %Y ") @endphp</td> --}}
 
@@ -86,9 +88,9 @@
                                             <td> @php echo "Rp " . number_format($item->HARGA_BARANG_MASUK ,2,',','.'); @endphp </td>
 
                                             <td> @php echo "Rp " . number_format($item->JML_BARANG_MSK * $item->HARGA_BARANG_MASUK ,2,',','.'); @endphp </td>
-                                            <td>
+                                            {{-- <td>
                                                 <a href="#ModalHapusBarangMasuk{{ $item->ID_MASUK }}" data-toggle="modal" class="btn btn-danger btn-xs"> <i class="fa fa-trash"> Hapus</i></a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @php
                                         $no++;

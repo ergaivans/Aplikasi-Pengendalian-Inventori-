@@ -27,7 +27,7 @@ class KategoriController extends Controller
             'NAMA_KATEGORI' => $request->input('nama'),
         );
 
-        DB::table('kategori')->where('ID_SUPPLIER', '=', $request->input('id'))->update($data);
+        DB::table('kategori')->where('ID_KATEGORI', '=', $request->input('id'))->update($data);
         Alert::success('Data Kategori', 'Data Berhasil Diubah');
         return Redirect::to('masterkategori');
     }

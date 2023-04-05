@@ -1,6 +1,6 @@
 <div class="form-group">
     <label >Niai Standard Devisiasi </label>
-    <input type="number" id="nilai_sd" class="form-control" name="nilai_sd" placeholder="Masukkan Jumlah Keluar Barang" value="{{$DataSD->KEBUTUHAN_BARANG_BL}}" readonly required>
+    <input type="number" id="nilai_sd" class="form-control" name="nilai_sd" placeholder="Masukkan Jumlah Keluar Barang" value="{{$DataSD->NILAI_NSD}}" readonly required>
 </div>
 
 <div class="form-group">

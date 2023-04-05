@@ -39,10 +39,10 @@
                                         <a class="btn btn-primary btn-round ml-auto" href="/barang-kurang">
                                             <i class="fas fa-calculator"></i>
                                             &nbsp; Barang < ROP </a>
-                                                <a class="btn btn-danger btn-round ml-auto" href="/export-barang-rop">
+                                                {{-- <a class="btn btn-danger btn-round ml-auto" id="btn_export_data" style="display: none;" href="/export-barang-rop">
                                                     <i class="fa fa-plus"></i>
                                                     Export Data
-                                                </a>
+                                                </a> --}}
                                     </div>
                                 </div>
                             </div>

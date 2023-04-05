@@ -15,10 +15,14 @@ class SafetyController extends Controller
         $data = DB::table('barang as ba')
             ->join('operasi as op', 'op.ID_BARANG', '=', 'ba.ID_BARANG')
             ->join('safety_factor as sf', 'sf.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->join('standartd as sd', 'sd.ID_BARANG', '=', 'ba.ID_BARANG')
+            ->join('nilai_sd as nsd', 'nsd.ID_BARANG', '=', 'ba.ID_BARANG')
             ->where('STATUS_OP', '=', 1)
+            ->where('STATUS_KB', '=', 1)
+            ->where('STATUS_NSD', '=', 1)
             ->where('STATUS_SAFE', '=', 1)
             ->get();
-            
+
         return View('gudang/operasibarang/safetystock/perhitungansafe')
             ->with('DataBarang', $data);
     }
@@ -42,25 +46,26 @@ class SafetyController extends Controller
             ->where('STATUS_OP', '=', 1)
             ->first();
 
+        $data3 =  DB::table('nilai_sd')
+        ->select('NILAI_NSD')
+        ->where('ID_BARANG', '=', $ID_BARANG)
+        ->where('STATUS_NSD', '=', 1)
+        ->first();
+
+        $safetystock = $data1->NILAI_SAFE * $data3->NILAI_NSD;
+
         // $hasil = $data2->KEBUTUHAN_BARANG_BL * $data1->NILAI_SAFE;
-
-        $kebutuhanbulan = $data2->KEBUTUHAN_BARANG_BL / 12;
-
-        $nilai_pangkat = 2;
-
-        $va = $data2->KEBUTUHAN_BARANG_BL - $kebutuhanbulan;
-
-        $hasilkuadrann = pow($va, $nilai_pangkat);
-
-        $fa = $hasilkuadrann / 11;
-
-        $hasil = sqrt($fa);
-
+        // $kebutuhanbulan = $data2->KEBUTUHAN_BARANG_BL / 12;
+        // $nilai_pangkat = 2;
+        // $va = $data2->KEBUTUHAN_BARANG_BL - $kebutuhanbulan;
+        // $hasilkuadrann = pow($va, $nilai_pangkat);
+        // $fa = $hasilkuadrann / 11;
+        // $hasil = sqrt($fa);
 
         return View('gudang/operasibarang/safetystock/ajax')
             ->with('DataSafetyFactor', $data1)
-            ->with('DataSD', $data2)
-            ->with('hasil', round($hasil));
+            ->with('DataSD', $data3)
+            ->with('hasil', round($safetystock));
     }
 
     public function OperasiTambahSafetyStock(Request $request)
