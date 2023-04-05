@@ -25,9 +25,9 @@
                         <a href="#">Daftar Barang</a>
                     </li>
                 </ul>
-                {{-- <div class="ml-auto">
+                <div class="ml-auto">
                     <button data-toggle="modal" data-target="#exampleModal" class="btn btn-success" style="margin-top: 10px;" type="submit">Filter</button>
-                </div> --}}
+                </div>
             </div>
             <div class="row">
 

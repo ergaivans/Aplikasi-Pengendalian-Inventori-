@@ -38,6 +38,12 @@
                                 <div class="col mt-3">
                                     <h4 class="card-title">Data Barang Keluar</h4>
                                 </div>
+                                <div class="col-md-auto mt-2">
+                                    <a class="btn btn-danger btn-round ml-auto" href="/transaksibarangkeluar/export?from={{$fromDate}}&to={{$toDate}}&search={{$namaBarang}}">
+                                        <i class="fa fa-plus"></i>
+                                        Export PDF
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">

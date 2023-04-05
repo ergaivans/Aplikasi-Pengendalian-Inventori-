@@ -156,7 +156,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ url('/transaksibarangmasuk/filter') }}" method="post">
+            <form action="{{ url('/transaksibarangmasuk/filter/laporan') }}" method="post">
 
                 <div class="modal-body">
                     @csrf

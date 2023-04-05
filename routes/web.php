@@ -93,6 +93,7 @@ Route::get('/detail-pembelian/{id}', 'HomeController@TampilDetailPembelian');
 
 Route::get('/transaksibarangmasuk', 'HomeController@TampilBarangMasuk');
 Route::post('/transaksibarangmasuk/filter', 'HomeController@exportBarangMasuk');
+Route::post('/transaksibarangmasuk/filter/laporan', 'HomeController@exportBarangMasukLaporan');
 Route::get('/transaksibarangmasuk/export/', 'HomeController@pdfBarangMasuk');
 Route::get('/export-barang-masuk', 'HomeController@tampilExportBarangMasuk');
 
@@ -100,6 +101,7 @@ Route::get('/export-barang-masuk', 'HomeController@tampilExportBarangMasuk');
 
 Route::get('/transaksibarangkeluar', 'HomeController@TampilBarangKeluar');
 Route::post('/transaksibarangkeluar/filter', 'HomeController@exportBarangKeluar');
+Route::post('/transaksibarangkeluar/filter/laporan', 'HomeController@exportBarangKeluarLaporan');
 Route::get('/transaksibarangkeluar/export/', 'HomeController@pdfBarangKeluar');
 Route::get('/export-barang-keluar', 'HomeController@tampilExportBarangKeluar');
 
